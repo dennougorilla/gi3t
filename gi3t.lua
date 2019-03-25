@@ -102,17 +102,17 @@ if sCommand == "run" then
 elseif sCommand == "get" then
     local funcStrs, keys = getGist(sCode)
     for i, k in ipairs(keys) do
-    local sPath = shell.resolve(k)
-    if fs.exists(sPath) then
-        print(k .." File already exists. Do you want to overwrite?(y/n)")
-        local yon = read()
-        if yon == "y" then
+        local sPath = shell.resolve(k)
+        if fs.exists(sPath) then
+            print(k .." File already exists. Do you want to overwrite?(y/n)")
+            local yon = read()
+            if yon == "y" then
+                saveFile(funcStrs[i], k)
+                print("Downloaded as " ..k)
+            end
+        else
             saveFile(funcStrs[i], k)
             print("Downloaded as " ..k)
         end
-    else
-        saveFile(funcStrs[i], k)
-        print("Downloaded as " ..k)
     end
-end
 end

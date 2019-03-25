@@ -35,17 +35,22 @@ local function getGist(gistId)
             return
         end
         print("Getiing raw file...")
-        local rawUrl = files[gistFileNames[0]].raw_url
-        local response = http.get(rawUrl)
-        if response then
-            print("Getting Success.")
-            local rawStr = response.readAll()
-            response.close()
-            return rawStr, gistFileNames
-        else
-            print("Getting Failed.")
-            return
+        local rawUrls = {}
+        for i, name in ipairs(gistFileNames) do
+            rawUrls[i] = files[name].raw_url
         end
+        local rawStrs = {}
+        for i, url in ipairs(rawUrls) do
+            local response = http.get(url)
+            if response then
+                print(gistFileNames[i], "Getting Success.")
+                rawStrs[gistFileNames[i]] = response.readAll()
+                response.close()
+            else
+                print(gistFileNames[i], "Getting Failed.")
+                return
+            end
+        return rawStrs, gistFileNames
     else
         print("Connecting Failed.")
         return
@@ -68,15 +73,15 @@ sCommand = tArgs[1]
 sCode = tArgs[2]
 
 if sCommand == "run" then
-    local funcStr, gistFileNames = getGist(sCode)
-    local func = loadstring(funcStr)
+    local funcStrs, keys = getGist(sCode)
+    local func = loadstring(funcStrs[keys[0]])
     local success, msg = pcall(func, table.unpack(tArgs, 3))
     if not success then
         printError(msg)
     end
 
 elseif sCommand == "get" then
-    local funcStr, gistFileNames = getGist(sCode)
-    saveFile(funcStr, gistFileNames[0])
-    print(gistFileNames[0] .. " saved.")
+    local funcStrs, keys = getGist(sCode)
+    saveFile(funcStrs[keys[0]], keys[0])
+    print(keys[0] .. " saved.")
 end

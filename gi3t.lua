@@ -27,14 +27,14 @@ local function getGist(gistId)
         local gistFileNames = {}
         local i = 0
         for k, v in pairs(files) do
-            gistFileNames[i] = k
             i = i + 1
+            gistFileNames[i] = k
         end
-        if not gistFileNames[0] then
+        if #gistFileNames == 0 then
             printError("Can't get gist file.")
             return
         end
-        print("Getiing raw file...")
+        print("Getiing raw files...")
         local rawUrls = {}
         for i, name in ipairs(gistFileNames) do
             rawUrls[i] = files[name].raw_url
@@ -43,13 +43,14 @@ local function getGist(gistId)
         for i, url in ipairs(rawUrls) do
             local response = http.get(url)
             if response then
-                print(gistFileNames[i], "Getting Success.")
-                rawStrs[gistFileNames[i]] = response.readAll()
+                print("Getting " ..gistFileNames[i] .." Success.")
+                rawStrs[i] = response.readAll()
                 response.close()
             else
                 print(gistFileNames[i], "Getting Failed.")
                 return
             end
+        end
         return rawStrs, gistFileNames
     else
         print("Connecting Failed.")
@@ -74,6 +75,11 @@ sCode = tArgs[2]
 
 if sCommand == "run" then
     local funcStrs, keys = getGist(sCode)
+    print(#funcStrs)
+    if #funcStrs > 1 then
+        print(sCode .." have many gist.")
+        return
+    end
     local func = loadstring(funcStrs[keys[0]])
     local success, msg = pcall(func, table.unpack(tArgs, 3))
     if not success then

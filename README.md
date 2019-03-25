@@ -8,5 +8,5 @@ pastebin get 4nRg9CHU json
 pastebin get k7jFHWNE gi3t
 ```
 ## Usage
-`gi3t run {GistId} {args}`
-`gi3t get {GistId}`
+`gi3t run <GistId> <args>`   
+`gi3t get <GistId>`

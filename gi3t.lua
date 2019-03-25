@@ -1,5 +1,5 @@
 --Title: gi3t
---version: v1.1
+--version: v1.11
 --Author: dennougorilla
 
 local function saveFile(text,name)
@@ -80,7 +80,6 @@ sCode = tArgs[2]
 if sCommand == "run" then
     local funcStrs, keys = getGist(sCode)
     local num = 1
-    print(#funcStrs)
     if #funcStrs > 1 then
         print(sCode .." have many gist. Input number of file you want to run.")
         for i, k in ipairs(keys) do
@@ -93,6 +92,7 @@ if sCommand == "run" then
         end
     end
     print("running "..keys[tonumber(num)])
+    shell.run("clear")
     local func = loadstring(funcStrs[tonumber(num)])
     local success, msg = pcall(func, table.unpack(tArgs, 3))
     if not success then

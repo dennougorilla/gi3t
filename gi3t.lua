@@ -1,12 +1,23 @@
-function saveFile(text,name)
+local function saveFile(text,name)
     local file = fs.open(name,"w")
     file.write(text)
     file.close()
 end
 
-args = {...}
-command = args[1]
-gistId = args[2]
+local function printUsage()
+    print("Usage:")
+    print("gi3t run <GistId> <args>")
+    print("gi3t get <GistId>")
+end
+
+local tArgs = {...}
+if #tArgs < 2 then
+    printUsage()
+    return
+end
+
+command = tArgs[1]
+gistId = tArgs[2]
 shell.run("pastebin get 4nRg9CHU json")
 os.loadAPI("json")
 str = http.get("https://api.github.com/gists/" .. gistId).readAll()
@@ -27,7 +38,7 @@ if command == "run" then
 
     funcStr = rawStr
     func = loadstring(funcStr)
-    pcall(func, table.unpack(args, 3))
+    pcall(func, table.unpack(tArgs, 3))
 
 elseif command == "get" then
     saveFile(rawStr, keys[0])
